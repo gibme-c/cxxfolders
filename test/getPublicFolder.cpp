@@ -2,6 +2,6 @@
 #include "../sago/platform_folders.h"
 
 int main() {
-	run_test(sago::getPublicFolder());
+	run_test(cxxfolders::getPublicFolder());
 	return 0;
 }

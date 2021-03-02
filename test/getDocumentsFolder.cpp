@@ -2,8 +2,8 @@
 #include "../sago/platform_folders.h"
 
 int main() {
-	run_test(sago::getDocumentsFolder());
-	sago::PlatformFolders p;
+	run_test(cxxfolders::getDocumentsFolder());
+	cxxfolders::PlatformFolders p;
 	run_test(p.getDocumentsFolder());
 	return 0;
 }

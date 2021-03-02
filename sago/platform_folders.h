@@ -35,7 +35,7 @@ SOFTWARE.
 /**
  * The namespace I use for common function. Nothing special about it.
  */
-namespace sago {
+namespace cxxfolders {
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 namespace internal {
@@ -47,6 +47,18 @@ std::string win32_utf16_to_utf8(const wchar_t* wstr);
 #endif
 }
 #endif  //DOXYGEN_SHOULD_SKIP_THIS
+
+/**
+ * Retrieves the base folder for storing data files.
+ * You must add the program name yourself like this:
+ * @code{.cpp}
+ * string data_home = getDataHome()+"/My Program Name/";
+ * @endcode
+ * On Windows this defaults to %APPDATA% (Roaming profile)
+ * On Linux this defaults to ~ but can be configured
+ * @return The base folder for storing program data.
+ */
+std::string getUserAppData();
 
 /**
  * Retrives the base folder for storing data files.
@@ -222,6 +234,11 @@ class PlatformFolders {
 public:
 	PlatformFolders();
 	~PlatformFolders();
+	/**
+	 * The folder that represents the application data folder.
+	 * @return Absolute path to the user's application data
+	 */
+	std::string getUserAppData() const;
 	/**
 	 * The folder that represents the desktop.
 	 * Normally you should try not to use this folder.

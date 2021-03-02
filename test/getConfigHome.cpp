@@ -2,6 +2,6 @@
 #include "../sago/platform_folders.h"
 
 int main() {
-	run_test(sago::getConfigHome());
+	run_test(cxxfolders::getConfigHome());
 	return 0;
 }

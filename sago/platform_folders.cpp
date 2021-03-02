@@ -88,7 +88,7 @@ static std::string getHome() {
 // For SHGetFolderPathW and various CSIDL "magic numbers"
 #include <shlobj.h>
 
-namespace sago {
+namespace cxxfolders {
 namespace internal {
 
 std::string win32_utf16_to_utf8(const wchar_t* wstr) {
@@ -129,7 +129,7 @@ static std::string GetKnownWindowsFolder(REFKNOWNFOLDERID folderId, const char* 
 	if (!SUCCEEDED(hr)) {
 		throw std::runtime_error(errorMsg);
 	}
-	return sago::internal::win32_utf16_to_utf8(wszPath);
+	return cxxfolders::internal::win32_utf16_to_utf8(wszPath);
 }
 
 static std::string GetAppData() {
@@ -161,17 +161,22 @@ static void throwOnRelative(const char* envName, const char* envValue) {
 	}
 }
 
-
+static std::string getLinuxHome(const char* envName)
+{
+    std::string res;
+    const char* tempRes = std::getenv(envName);
+    if (tempRes) {
+        throwOnRelative(envName, tempRes);
+        res = tempRes;
+        return res;
+    }
+    res = getHome();
+    return res;
+}
 
 static std::string getLinuxFolderDefault(const char* envName, const char* defaultRelativePath) {
-	std::string res;
-	const char* tempRes = std::getenv(envName);
-	if (tempRes) {
-		throwOnRelative(envName, tempRes);
-		res = tempRes;
-		return res;
-	}
-	res = getHome() + "/" + defaultRelativePath;
+    std::string res;
+	res = getLinuxHome(envName) + "/" + defaultRelativePath;
 	return res;
 }
 
@@ -180,13 +185,13 @@ static void appendExtraFolders(const char* envName, const char* defaultValue, st
 	if (!envValue) {
 		envValue = defaultValue;
 	}
-	sago::internal::appendExtraFoldersTokenizer(envName, envValue, folders);
+	cxxfolders::internal::appendExtraFoldersTokenizer(envName, envValue, folders);
 }
 
 #endif
 
 
-namespace sago {
+namespace cxxfolders {
 
 #if !defined(_WIN32) && !defined(__APPLE__)
 namespace internal {
@@ -206,6 +211,16 @@ void appendExtraFoldersTokenizer(const char* envName, const char* envValue, std:
 }
 }
 #endif
+
+std::string getUserAppData() {
+#ifdef _WIN32
+    return GetAppData();
+#elif defined(__APPLE__)
+    return getHome()+"/Library/Application Support";
+#else
+    return getLinuxHome("XDG_DATA_HOME");
+#endif
+}
 
 std::string getDataHome() {
 #ifdef _WIN32
@@ -325,6 +340,16 @@ PlatformFolders::PlatformFolders() {
 PlatformFolders::~PlatformFolders() {
 #if !defined(_WIN32) && !defined(__APPLE__)
 	delete this->data;
+#endif
+}
+
+std::string PlatformFolders::getUserAppData() const {
+#ifdef _WIN32
+    return GetAppData();
+#elif defined(__APPLE__)
+    return getHome()+"/Library/Application Support";
+#else
+    return getLinuxHome("XDG_DATA_HOME");
 #endif
 }
 

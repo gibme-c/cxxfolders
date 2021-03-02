@@ -5,7 +5,7 @@
 
 int main() {
 	std::vector<std::string> extraData;
-	sago::appendAdditionalConfigDirectories(extraData);
+	cxxfolders::appendAdditionalConfigDirectories(extraData);
 	run_test(extraData);
 	return 0;
 }

@@ -2,6 +2,6 @@
 #include "../sago/platform_folders.h"
 
 int main() {
-	run_test(sago::getStateDir());
+	run_test(cxxfolders::getStateDir());
 	return 0;
 }

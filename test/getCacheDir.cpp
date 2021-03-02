@@ -2,6 +2,6 @@
 #include "../sago/platform_folders.h"
 
 int main() {
-	run_test(sago::getCacheDir());
+	run_test(cxxfolders::getCacheDir());
 	return 0;
 }
